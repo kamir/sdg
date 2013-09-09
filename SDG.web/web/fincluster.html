@@ -1,0 +1,290 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="jsonTable.js"></script>
+
+        
+        <style type="text/css">
+            .rowClass td
+            {
+                border: 2px solid #c144c1;
+            }
+        </style>
+
+        <script>
+
+
+
+            /*
+             Yahoo Finance stock historical data, prices and details retrieval function written in Javascript, jQuery and YQL
+             v2013-08-05
+             (c) 2013 by Fincluster ltd - http://fincluster.com <dev@fincluster.com>
+             */
+            (function($) {
+                function getStock(opts, type, complete) {
+                    var defs = {
+                        desc: false,
+                        baseURL: 'http://query.yahooapis.com/v1/public/yql?q=',
+                        query: {
+                            quotes: 'select * from yahoo.finance.quotes where symbol = "{stock}" | sort(field="{sortBy}", descending="{desc}")',
+                            historicaldata: 'select * from yahoo.finance.historicaldata where symbol = "{stock}" and startDate = "{startDate}" and endDate = "{endDate}"'
+                        },
+                        suffixURL: {
+                            quotes: '&env=store://datatables.org/alltableswithkeys&format=json&callback=?',
+                            historicaldata: '&env=store://datatables.org/alltableswithkeys&format=json&callback=?'
+                        }
+                    };
+
+                    opts = opts || {};
+
+                    if (!opts.stock) {
+                        complete('No stock defined');
+                        return;
+                    }
+
+                    var query = defs.query[type]
+                            .replace('{stock}', opts.stock)
+                            .replace('{sortBy}', defs.sortBy)
+                            .replace('{desc}', defs.desc)
+                            .replace('{startDate}', opts.startDate)
+                            .replace('{endDate}', opts.endDate)
+
+                    var url = defs.baseURL + query + (defs.suffixURL[type] || '');
+                    $.getJSON(url, function(data) {
+                        var err = null;
+                        if (!data || !data.query) {
+                            err = true;
+                        }
+                        complete(err, !err && data.query.results);
+                    });
+                    alert( url );
+                }
+                window.getStock = getStock;
+            })(jQuery);
+
+            /* Usage Examples
+             getStock({ stock: 'AAPL' }, 'quotes', function(err, data) {
+             console.log(data);
+             });
+             
+             getStock({ stock: 'AAPL', startDate: '2013-01-01', endDate: '2013-01-05' }, 'historicaldata', function(err, data) {
+             console.log(data);
+             });
+             */
+
+            var symbol = "MSFT";
+
+            function addrow() {
+                symbol = $("#symb").val();     
+                alert( symbol );
+                load(symbol);
+            }
+
+            function load(symbol) {
+                getStock(
+                        {stock: symbol, startDate: '2009-01-01', endDate: '2009-12-31'}, 'historicaldata', function(err, data) {
+                    writeResult(data, symbol);
+                }
+                );
+            }
+
+
+            function writeResult(data, symbol) {
+
+                // $("#volume").html( inspect( data, 3 ) );
+
+                // var result = JSON.stringify(data);
+                // $("#volume").text( "<p>" + result + "</p>" );
+
+                $("#dataTable").jsonTable({
+                    head: ['date', 'Adj_Close'],
+                    json: ['date', 'Adj_Close']
+                });
+
+
+
+                $("#dataTable").jsonTableUpdate({
+                    source: data.quote,
+                    rowClass: "rowClass",
+                    callback: function() {
+                        $("#mssg").html("<b>" + symbol + "</b> table updated at " + new Date());
+                    }
+                });
+
+                drawChart(data.quote, symbol);
+
+
+
+
+            }
+
+//
+//  http://www.codeproject.com/Articles/24549/How-to-Inspect-a-JavaScript-Object
+//
+            function inspect(obj, maxLevels, level)
+            {
+                var str = '', type, msg;
+
+                // Start Input Validations
+                // Don't touch, we start iterating at level zero
+                if (level == null)
+                    level = 0;
+
+                // At least you want to show the first level
+                if (maxLevels == null)
+                    maxLevels = 1;
+                if (maxLevels < 1)
+                    return '<font color="red">Error: Levels number must be > 0</font>';
+
+                // We start with a non null object
+                if (obj == null)
+                    return '<font color="red">Error: Object <b>NULL</b></font>';
+                // End Input Validations
+
+                // Each Iteration must be indented
+                str += '<ul>';
+
+                // Start iterations for all objects in obj
+                for (property in obj)
+                {
+                    try
+                    {
+                        // Show "property" and "type property"
+                        type = typeof(obj[property]);
+                        str += '<li>(' + type + ') ' + property +
+                                ((obj[property] == null) ? (': <b>null</b>') : ('')) + '</li>';
+
+                        // We keep iterating if this property is an Object, non null
+                        // and we are inside the required number of levels
+                        if ((type == 'object') && (obj[property] != null) && (level + 1 < maxLevels))
+                            str += inspect(obj[property], maxLevels, level + 1);
+                    }
+                    catch (err)
+                    {
+                        // Is there some properties in obj we can't access? Print it red.
+                        if (typeof(err) == 'string')
+                            msg = err;
+                        else if (err.message)
+                            msg = err.message;
+                        else if (err.description)
+                            msg = err.description;
+                        else
+                            msg = 'Unknown';
+
+                        str += '<li><font color="red">(Error) ' + property + ': ' + msg + '</font></li>';
+                    }
+                }
+
+                // Close indent
+                str += '</ul>';
+
+                return str;
+            }
+
+
+        </script>
+
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+
+            google.load("visualization", "1", {packages: ["corechart"]});
+            
+            var allRows = [];
+            var symbols = [];
+
+            // google.setOnLoadCallback(drawChart);
+            function drawChart(results, symbol) {
+
+                allRows = allRows.concat( [results] );
+                symbols = symbols.concat( [symbol] );
+                
+                data = new google.visualization.DataTable();
+                data.addColumn('date', 'year');
+                data.addColumn('number', symbol + '_AC');
+                
+                var sampleData = [], item;
+            
+                //for (var j = 0, jlen = allRows.length; j < jlen; i++) {
+                //      data.addColumn('number', symbols[j] + '_AC');
+                //
+                
+                for (var i = 0, ilen = results.length; i < ilen; i++) {
+                    temp = [];
+                    
+                    item = results[i]; 
+                    
+                    // temp = [ new Date(item.date) , parseFloat(item.Adj_Close) ];
+            
+                  //  for (var j = 0, jlen = allRows.length; j < jlen; i++) {
+                  //      set = allRows[j]; 
+                  //      item2 = set[i]; 
+                        
+                  //      temp = temp.concat( [ parseFloat(item2.Adj_Close) ] );
+                  //  }
+
+                    
+
+                    data.addRow( [new Date(item.date), parseFloat(item.Adj_Close)] );  
+                    // data.addRow( temp );  
+                };
+
+                var options = {
+                    title: ' ' + symbol
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+                
+                $("#ressymb").val( symbol );
+                $("#resrow").val( JSON.stringify(results) );
+                    
+    }
+            
+            
+            
+        var data;    
+        function init()  { 
+            
+
+                    
+            $("#symb").val( symbol );
+            
+        }
+        </script>
+
+    </head>
+    <body onload="init()">
+        
+        <FORM METHOD="POST" action="http://localhost:8080/SDC/SDC?Tester">
+                <INPUT TYPE=SUBMIT NAME=action value=insertNewRow> 
+                <INPUT TYPE=TEXT NAME=PARAMinsertNewRow0 id="ressymb">
+                <INPUT TYPE=TEXT NAME=PARAMinsertNewRow1 id="resrow">
+        </FORM>
+        
+        <input type="text" id="symb"/>
+        <a href="javascript:addrow();">Download</a><br/>
+
+        <div id="volume"></div>
+
+        <div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+        <div id="mssg"></div>
+        <table id="dataTable">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+
+
+
+
+    </body>
+</html>

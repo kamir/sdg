@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>
+    
+    function load() {
+        
+        var stockList = "GOOG,YHOO,T,AAPL";
+        var stockFormat = "snl1d1t1c1hgw";
+        var host = "http://quote.yahoo.com/d/quotes.csv";
+        
+        var requestUrl = host + "?s=" + stockList + "&amp;f=" + stockFormat + "&amp;e=.csv";
+        
+        var url = 'http://ichart.finance.yahoo.com/table.csv?s=MSFT&a=00&b=1&c=2009&d=11&e=12&f=2009&g=d&ignore=.csv';
+        
+        alert( requestUrl );
+ 
+
+    $("#div1").load( requestUrl ,function(responseTxt,statusTxt,xhr){
+      if(statusTxt=="success")
+        alert("External content loaded successfully!");
+      if(statusTxt=="error")
+        alert("Error: "+xhr.status+": "+xhr.statusText);
+    });
+
+
+        $("#div1").value = requestUrl;
+    }
+ 
+
+        
+    </script>
+    
+    
+        <title>Stock Data Grabber</title>
+    </head>
+    <body>
+        Data collection in HBase made easy ... <br>
+        
+        http://www.seangw.com/wordpress/2010/01/formatting-stock-data-from-yahoo-finance/
+        
+        <hr/>
+        The tool works with an HBase cluster (behind a TSCache Proxy Server).
+        
+        <a href="javascript:load();">Download</a><br/>
+        
+        <textarea rows="4" cols="50" id="atl"></textarea><br/>
+        <textarea rows="4" cols="50" id="at"></textarea><br/>
+        <textarea rows="4" cols="50" id="tf"></textarea><br/>
+        
+        
+<div id="div1"><h2>Let jQuery AJAX Change This Text</h2></div>
+<button>Get External Content</button>
+
+    </body>
+</html>
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jQuery : jsonTable</title>
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="jsonTable.js"></script>
+	<style type="text/css">
+	.rowClass td
+	{
+		border: 1px solid #c1c1c1;
+	}
+	</style>
+</head>
+<body>
+<div id="mssg"></div>
+<table id="dataTable">
+	<thead>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+<script type="text/javascript">
+	$("#dataTable").jsonTable({
+		head : ['#','Operating System','Market Share'],
+		json : ['id', 'name', 'share']
+	});
+        
+        var data = [
+{"id" : 1, "name" : "iOS", "share" : 57.56},
+{"id" : 2, "name" : "Android", "share" : 24.66},
+{"id" : 3, "name" : "Java ME", "share" : 10.72},
+{"id" : 4, "name" : "Symbian", "share" : 2.49},
+{"id" : 4, "name" : "Blackberry", "share" : 2.26},
+{"id" : 4, "name" : "Windows Phone", "share" : 1.33}
+]
+
+	$("#dataTable").jsonTableUpdate({
+		source : data,
+		rowClass : "rowClass",
+		callback : function(){
+			$("#mssg").html("Table updated at " + new Date());
+		}
+	});
+</script>
+</body>
+</html>

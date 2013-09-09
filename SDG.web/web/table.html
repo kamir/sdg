@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC
+  "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>
+      $(document).ready(function(){
+        $.getJSON("http://mdbitz.com/testing/PHPYahooFinance/finance.php?symbol=DELL&callback=?",
+          function(data){
+            $("#symbol").text( data.symbol );
+            $("#previousClose" ).text( data.previousClose );
+            $("#open" ).text( data.open );
+            $("#lastTrade").text( data.lastTrade );
+            $("#lastTradeTime").text( data.lastTradeTime );
+            $("#change").text( data.change );
+            $("#daysLow").text( data.daysLow );
+            $("#daysHigh").text( data.daysHigh );
+            $("#volume").text( data.volume);
+          }
+        );
+     });
+     </script>
+  </head>
+  <body>
+    <div id="quote">
+      <table cellspacing="0" cellpadding="3" border="1">
+        <tr>
+          <th>Symbol</th>
+          <th>Last Trade</th>
+          <th>Last Trade Time</th>
+          <th>Change</th>
+          <th>Open</th>
+          <th>Previous Close</th>
+          <th>Day's Low</th>
+          <th>Day's High</th>
+          <th>Volume</th>
+        </tr>
+        <tr>
+          <td id="symbol"></td>
+          <td id="lastTrade"></td>
+          <td id="lastTradeTime"></td>
+          <td id="change"></td>
+          <td id="open"></td>
+          <td id="previousClose"></td>
+          <td id="daysLow"></td>
+          <td id="daysHigh"></td>
+          <td id="volume"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
