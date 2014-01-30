@@ -1,0 +1,32 @@
+# Wiki Link	Stock Symbol (Yahoo)	Index Name
+# attention !!!! REPLACE (^) WITH (%5E)
+http://de.wikipedia.org/wiki/Nikkei_225,%5EN225,Nikkei 225
+http://de.wikipedia.org/wiki/SSE_Composite_Index,000001.SS,SSE Composite
+http://de.wikipedia.org/wiki/DAX,FDAX.EX,DAX Performance
+http://de.wikipedia.org/wiki/FTSE_350_Index,%5EFTLC,FTSE 350
+http://de.wikipedia.org/wiki/S%26P_500,%5EGSPC,SuP500
+http://de.wikipedia.org/wiki/BSE_Sensex,%5EBSESN,BSE SENSEX
+http://de.wikipedia.org/wiki/CAC40,%5EFCHI,CAC40
+http://de.wikipedia.org/wiki/Austrian_Traded_Index,%5EATX,ATX
+http://de.wikipedia.org/wiki/AEX,%5EAEX,AEX
+http://de.wikipedia.org/wiki/Swiss_Market_Index,%5ESSMI,SMI
+http://de.wikipedia.org/wiki/Athex_Composite_Share_Price_Index,GD.AT,ATHEN INDEX COMPOS
+http://de.wikipedia.org/wiki/MICEX,MICEXINDEXCF.ME,MICEX IND
+http://de.wikipedia.org/wiki/Hang_Seng_Index,%5EHSI,HANG SENG INDEX
+http://de.wikipedia.org/wiki/All_Ordinaries,%5EAORD,ALL ORDINARIES
+http://de.wikipedia.org/wiki/NZX_50_Index,%5ENZ50,NZX 50 INDEX GROSS
+http://de.wikipedia.org/wiki/KOSPI,%5EKS11,KOSPI Composite Index
+http://de.wikipedia.org/wiki/Taiwan_Capitalization_Weighted_Stock_Index,%5ETWII,TSEC weighted index
+http://de.wikipedia.org/wiki/Straits_Times_Index,%5ESTI,STRAITS TIMES INDEX
+http://de.wikipedia.org/wiki/IBOVESPA,%5EBVSP,IBOVESPA
+http://de.wikipedia.org/wiki/TA-100_Index,%5ETA100,TEL AVIV TA-100
+http://de.wikipedia.org/wiki/S%26P_Africa_40_Index,%5ESPAFRUP,S&P Africa 40 Index
+http://de.wikipedia.org/wiki/%C3%8Dndice_de_Precios_y_Cotizaciones,%5EMXX,IPC
+#
+#### no IWL links and no German page
+http://en.wikipedia.org/wiki/FTSE_Bursa_Malaysia_Index,%5EKLSE,FTSE Bursa Malaysia KLCI
+#### no German page
+http://en.wikipedia.org/wiki/%C3%8Dndice_de_Precio_Selectivo_de_Acciones,%5EIPSA,IPSA SANTIAGO DE CHILE 
+#### no WIKIPAGE available
+http://de.wikipedia.org/wiki/22,%5ENQCA,NASDAQ CANADA INDEX
+http://de.wikipedia.org/wiki/26,JN0U.FGI,FTSE/JSE YOP 40  USD 

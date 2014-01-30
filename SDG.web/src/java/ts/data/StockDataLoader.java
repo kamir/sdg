@@ -10,6 +10,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +50,9 @@ public class StockDataLoader {
     Vector<String> liste = new Vector<String>();
     Hashtable<String, String> hash = new Hashtable<String, String>();
     Hashtable<String, Messreihe> hashMR = new Hashtable<String, Messreihe>();
-    String label = "daxmap.dat";
+    
+    static String label = "UK.csv"; // "dowjonesmap.dat";//"daxmap.dat";//
+    
     String stock = "MSFT";
     String startDate = "2009-01-01";
     String endDate = "2009-12-31";
@@ -74,31 +78,37 @@ public class StockDataLoader {
 
     public static void main(String[] arg) throws IOException {
 
-//        String column = "Adj_Close";
-//        StockDataLoader sdl = StockDataLoader.getOnlineLoader( column, "2009-01-01", "2009-12-31", "daxmap.dat");
-//        sdl.showCharts();
+        String column = "Close";
+        StockDataLoader sdl0 = StockDataLoader.getOnlineLoader( column, "2012-01-01", "2012-12-31", label );
+        sdl0.showCharts();
         
-        StockDataLoader sdl = StockDataLoader.getLocalLoader("2009-01-01", "2009-12-31", "daxmap.dat");
+        for( String s : bad ) { 
+            System.out.println( s );
+        }
+//        
+//        System.exit( 0 );
+        
+        StockDataLoader sdl = StockDataLoader.getLocalLoader("2012-01-01", "2012-12-31", label);
         sdl.initColumn( "Close" );
         sdl.showCharts();
         
-        StockDataLoader sdl2 = StockDataLoader.getLocalLoader("2009-01-01", "2009-12-31", "daxmap.dat");
+        StockDataLoader sdl2 = StockDataLoader.getLocalLoader("2012-01-01", "2012-12-31", label);
         sdl2.initColumn( "Adj_Close" );
         sdl2.showCharts();
         
-        StockDataLoader sdl3 = StockDataLoader.getLocalLoader("2009-01-01", "2009-12-31", "daxmap.dat");
+        StockDataLoader sdl3 = StockDataLoader.getLocalLoader("2012-01-01", "2012-12-31", label);
         sdl3.initColumn( "High" );
         sdl3.showCharts();
         
-        StockDataLoader sdl4 = StockDataLoader.getLocalLoader("2009-01-01", "2009-12-31", "daxmap.dat");
+        StockDataLoader sdl4 = StockDataLoader.getLocalLoader("2012-01-01", "2012-12-31", label);
         sdl4.initColumn( "Low" );
         sdl4.showCharts();
         
-        StockDataLoader sdl5 = StockDataLoader.getLocalLoader("2009-01-01", "2009-12-31", "daxmap.dat");
+        StockDataLoader sdl5 = StockDataLoader.getLocalLoader("2012-01-01", "2012-12-31", label);
         sdl5.initColumn( "Open" );
         sdl5.showCharts();
         
-        StockDataLoader sdl6 = StockDataLoader.getLocalLoader("2009-01-01", "2009-12-31", "daxmap.dat");
+        StockDataLoader sdl6 = StockDataLoader.getLocalLoader("2012-01-01", "2012-12-31", label);
         sdl6.initColumn( "Volume" );
         sdl6.showCharts();
     }
@@ -106,8 +116,13 @@ public class StockDataLoader {
 
     public void loadForSymbol(String key, String selectedColumn, BufferedWriter bw) throws IOException {
 
-        String callUrl = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20(%22" + key + "%22)%20and%20startDate%3D%22" + startDate + "%22%20and%20endDate%3D%22" + endDate + "%22%0A%09%09&diagnostics=true&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json";
+        // String callUrl = "http://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.historicaldata where symbol in (" + key + "\") and startDate=\"" + startDate + "\" and endDate=\"" + endDate + "\"&diagnostics=true&env=http://datatables.org/alltables.env&format=json";
+        
+        String callUrl = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20%28%22" + key + "%22%29%20and%20startDate=%222009-01-01%22%20and%20endDate=%222009-12-31%22&diagnostics=true&env=http://datatables.org/alltables.env&format=json";
 
+        System.out.println( callUrl ); 
+        
+        
         bw.write(key + "\t");
         bw.write(callUrl + "\t");
 
@@ -189,13 +204,16 @@ public class StockDataLoader {
         catch (Exception pe) {
             Logger.getLogger(StockDataLoader.class.getName()).log(Level.SEVERE, null, pe);
 
-            System.out.println(pe);
+            System.out.println(pe.getMessage());
 
+            bad.add( symbol );
         }
     }
+    
+    static Vector<String> bad = new Vector<String>();
 
     private void loadListe() throws FileNotFoundException, IOException {
-        String file = "./../DATA/" + label;
+        String file = "./DATA/" + label;
         FileReader fr = new FileReader(new File(file));
         BufferedReader br = new BufferedReader(fr);
         while (br.ready()) {
@@ -203,19 +221,25 @@ public class StockDataLoader {
 
             if (line.startsWith("#")) {
             } else {
+                
                 StringTokenizer st = new StringTokenizer(line, "\t");
+                System.out.println(st.countTokens() + ":" + line );
                 String tok1 = st.nextToken();
                 String tok2 = st.nextToken();
-                System.out.println(tok1 + " " + tok2);
+                System.out.println("(" + tok1 + ") [" + tok2 + "]");
 
                 hash.put(tok1, tok2);
-
-                //System.out.println( tok );
+ 
                 if (!liste.contains(tok2)) {
                     liste.add(tok2);
                 }
             }
         }
+//        hash.put("Visa_Inc.","V");
+//        hash.put("Walmart","WMT");
+//        hash.put("The_Walt_Disney_Company","DIS");
+        
+       
         System.out.println( "> list loaded ... ");
     }
 
@@ -234,9 +258,13 @@ public class StockDataLoader {
 
         BufferedWriter bw = new BufferedWriter(fw);
 
+        
         for (String s : hash.values()) {
+            symbol = s;
             System.out.println(i + ") SYMBOL: " + s);
             loadForSymbol(s, column, bw);
+        
+            //javax.swing.JOptionPane.showInputDialog("go");
             i++;
         }
 
@@ -244,6 +272,8 @@ public class StockDataLoader {
         bw.close();
 
     }
+    
+    String symbol = "";
 
     private void initCacheFromWeb(String col) throws FileNotFoundException, IOException {
         column = col;
